@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculator</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a1a2e; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial; }
+  .calc { background: #16213e; border-radius: 20px; padding: 20px; box-shadow: 0 0 40px rgba(0,200,255,0.3); width: 320px; }
+  .display { background: #0f3460; border-radius: 12px; padding: 20px; text-align: right; margin-bottom: 20px; }
+  .expression { color: #888; font-size: 14px; min-height: 20px; }
+  .result { color: white; font-size: 36px; font-weight: bold; word-break: break-all; }
+  .buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  button { padding: 18px; border: none; border-radius: 12px; font-size: 18px; cursor: pointer; transition: all 0.2s; }
+  button:active { transform: scale(0.95); }
+  .btn-num { background: #1a1a4e; color: white; }
+  .btn-num:hover { background: #2a2a6e; }
+  .btn-op { background: #0f3460; color: #00c8ff; }
+  .btn-op:hover { background: #1a4a80; }
+  .btn-eq { background: #00c8ff; color: #1a1a2e; font-weight: bold; }
+  .btn-eq:hover { background: #00a8df; }
+  .btn-clear { background: #e94560; color: white; }
+  .btn-clear:hover { background: #c93040; }
+  .btn-zero { grid-column: span 2; }
+</style>
+</head>
+<body>
+<div class="calc">
+  <div class="display">
+    <div class="expression" id="expression"></div>
+    <div class="result" id="result">0</div>
+  </div>
+  <div class="buttons">
+    <button class="btn-clear" onclick="clearAll()">AC</button>
+    <button class="btn-op" onclick="toggleSign()">+/-</button>
+    <button class="btn-op" onclick="percent()">%</button>
+    <button class="btn-op" onclick="appendOp('/')">÷</button>
+    <button class="btn-num" onclick="appendNum('7')">7</button>
+    <button class="btn-num" onclick="appendNum('8')">8</button>
+    <button class="btn-num" onclick="appendNum('9')">9</button>
+    <button class="btn-op" onclick="appendOp('*')">×</button>
+    <button class="btn-num" onclick="appendNum('4')">4</button>
+    <button class="btn-num" onclick="appendNum('5')">5</button>
+    <button class="btn-num" onclick="appendNum('6')">6</button>
+    <button class="btn-op" onclick="appendOp('-')">−</button>
+    <button class="btn-num" onclick="appendNum('1')">1</button>
+    <button class="btn-num" onclick="appendNum('2')">2</button>
+    <button class="btn-num" onclick="appendNum('3')">3</button>
+    <button class="btn-op" onclick="appendOp('+')">+</button>
+    <button class="btn-num btn-zero" onclick="appendNum('0')">0</button>
+    <button class="btn-num" onclick="appendDot()">.</button>
+    <button class="btn-eq" onclick="calculate()">=</button>
+  </div>
+</div>
+<script>
+  let current = '0', expression = '';
+  const res = document.getElementById('result');
+  const exp = document.getElementById('expression');
+  function update() { res.textContent = current; exp.textContent = expression; }
+  function appendNum(n) { current = current === '0' ? n : current + n; update(); }
+  function appendOp(op) { expression = current + ' ' + op; current = '0'; update(); }
+  function appendDot() { if (!current.includes('.')) { current += '.'; update(); } }
+  function clearAll() { current = '0'; expression = ''; update(); }
+  function toggleSign() { current = current.startsWith('-') ? current.slice(1) : '-' + current; update(); }
+  function percent() { current = String(parseFloat(current) / 100); update(); }
+  function calculate() {
+    try {
+      const full = expression + ' ' + current;
+      exp.textContent = full + ' =';
+      current = String(eval(full.replace('÷','/').replace('×','*')));
+      expression = '';
+      update();
+    } catch { current = 'Error'; update(); }
+  }
+</script>
+</body>
+</html>
